@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: WTFPL
+import os
 try:
     from importlib.metadata import version as _version
     __version__ = _version(__name__)
@@ -12,12 +13,16 @@ def _warn(message:str, category:str='', stacklevel:int=1, source:str=''): # need
 
 def please():
     global _original_warn
+    os.environ['PYTHONWARNINGS'] = 'ignore'
     _original_warn = _warnings.warn
     _warnings.warn = _warn
 
 def jk():
     global _original_warn
     if not _original_warn: return
+
+    del os.environ['PYTHONWARNINGS']
+
     _warnings.warn = _original_warn
     _original_warn = None
 
